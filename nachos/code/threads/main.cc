@@ -52,6 +52,11 @@
 
 #include "utility.h"
 #include "system.h"
+#include <fstream>
+#include <stdio.h>
+#include <string>
+#include <iostream>
+using namespace std;
 
 
 // External functions used by this file
@@ -109,10 +114,25 @@ main(int argc, char **argv)
 					// Nachos will loop forever waiting 
 					// for console input
 	}
-#endif // USER_PROGRAM
-#ifdef FILESYS
-	if (!strcmp(*argv, "-cp")) { 		// copy from UNIX to Nachos
-	    ASSERT(argc > 2);
+	if(!strcmp(*argv, "-F")){
+		std::ifstream infile(*(argv + 1));
+		string a,b;
+		while(infile >> a >> b) {
+			// cout << a << b << endl;
+			char *temp = &a[0];
+
+			StartUserProcess(temp);
+		}
+		// while (infile >> a >> b)
+		// {
+  //   		printf("%s %d",a,b);	// process pair (a,b)
+		// }
+		argCount = 2;
+	}
+	#endif // USER_PROGRAM
+	#ifdef FILESYS
+		if (!strcmp(*argv, "-cp")) { 		// copy from UNIX to Nachos
+		    ASSER)T(argc > 2);
 	    Copy(*(argv + 1), *(argv + 2));
 	    argCount = 3;
 	} else if (!strcmp(*argv, "-p")) {	// print a Nachos file
