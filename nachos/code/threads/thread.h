@@ -83,6 +83,7 @@ class NachOSThread {
     int machineState[MachineStateSize];  // all registers except for stackTop
 
   public:
+    int priority;
     NachOSThread(char* debugName);		// initialize a Thread 
     ~NachOSThread(); 				// deallocate a Thread
 					// NOTE -- thread being deleted

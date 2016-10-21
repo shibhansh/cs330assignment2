@@ -1,1 +1,6 @@
-../test/forkjoin
+../test/printtest 10
+../test/forkjoin 20
+../test/printtest 30
+../test/printtest 
+../test/printtest 40
+../test/printtest 50

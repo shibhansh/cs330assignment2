@@ -49,12 +49,14 @@
 #define MAIN
 #include "copyright.h"
 #undef MAIN
-
 #include "utility.h"
 #include "system.h"
+#include "machine.h"
+#include "syscall.h"
 #include <fstream>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <iostream>
 using namespace std;
 
@@ -65,6 +67,8 @@ extern void ThreadTest(void), Copy(char *unixFile, char *nachosFile);
 extern void Print(char *file), PerformanceTest(void);
 extern void StartUserProcess(char *file), ConsoleTest(char *in, char *out);
 extern void MailTest(int networkID);
+extern int system_call_Fork(void);
+extern void BulkAdd(char *filename,int p);
 
 //----------------------------------------------------------------------
 // main
@@ -101,6 +105,8 @@ main(int argc, char **argv)
         if (!strcmp(*argv, "-x")) {        	// run a user program
 	    ASSERT(argc > 1);
             StartUserProcess(*(argv + 1));
+            DEBUG('k', "exec.\n");
+
             argCount = 2;
         } else if (!strcmp(*argv, "-c")) {      // test the console
 	    if (argc == 1)
@@ -115,18 +121,34 @@ main(int argc, char **argv)
 					// for console input
 	}
 	if(!strcmp(*argv, "-F")){
+		
 		std::ifstream infile(*(argv + 1));
-		string a,b;
-		while(infile >> a >> b) {
-			// cout << a << b << endl;
-			char *temp = &a[0];
-
-			StartUserProcess(temp);
+		std::string line;
+		while (std::getline(infile, line))
+		{
+    		int priority;
+    		std::istringstream iss(line);
+    		string a,b,process;
+    		if (!(iss >> a >> b)) {
+    			priority = 100;
+    			process = line;
+    		}
+    		else{
+    			priority = atoi(b.c_str());
+    			process = a;
+    		}
+			BulkAdd(&process[0],priority);
 		}
-		// while (infile >> a >> b)
-		// {
-  //   		printf("%s %d",a,b);	// process pair (a,b)
+
+		// std::ifstream infile(*(argv + 1));
+		// string a,b;
+		// while(infile >> a) {
+		// 	//cout << a << endl;
+		// 	char *temp = &a[0];
+		// 	BulkAdd(temp);
+		// 	DEBUG('k',"In While\n");
 		// }
+		
 		argCount = 2;
 	}
 	#endif // USER_PROGRAM
@@ -162,6 +184,8 @@ main(int argc, char **argv)
         }
 #endif // NETWORK
     }
+    DEBUG('k',"Before finishthread\n");
+    exitThreadArray[currentThread->GetPID()] = true;
 
     currentThread->FinishThread();	// NOTE: if the procedure "main" 
 				// returns, then the program "nachos"
@@ -171,5 +195,7 @@ main(int argc, char **argv)
 				// to those threads by saying that the
 				// "main" thread is finished, preventing
 				// it from returning.
+    DEBUG('k',"Before Return 0\n");
+
     return(0);			// Not reached...
 }

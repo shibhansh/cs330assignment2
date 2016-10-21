@@ -35,7 +35,7 @@
 NachOSThread::NachOSThread(char* threadName)
 {
     int i;
-
+    priority = 0;
     name = threadName;
     stackTop = NULL;
     stack = NULL;
@@ -82,6 +82,7 @@ NachOSThread::~NachOSThread()
     ASSERT(this != currentThread);
     if (stack != NULL)
 	DeallocBoundedArray((char *) stack, StackSize * sizeof(int));
+    DEBUG('t', "Deleted Successfully\n");
 }
 
 //----------------------------------------------------------------------
@@ -115,6 +116,7 @@ NachOSThread::ThreadFork(VoidFunctionPtr func, int arg)
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
     scheduler->ThreadIsReadyToRun(this);	// ThreadIsReadyToRun assumes that interrupts 
 					// are disabled!
+    DEBUG('k',"ReadyQueue Enqued\n");
     (void) interrupt->SetLevel(oldLevel);
 }    
 
