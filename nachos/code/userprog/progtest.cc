@@ -14,11 +14,18 @@
 #include "addrspace.h"
 #include "synch.h"
 
+
 //----------------------------------------------------------------------
 // StartUserProcess
 // 	Run a user program.  Open the executable, load it into
 //	memory, and jump to it.
 //----------------------------------------------------------------------
+void
+BulkStartFunction (int dummy)
+{
+   currentThread->Startup();
+   machine->Run();
+}
 
 void
 StartUserProcess(char *filename)
@@ -42,6 +49,31 @@ StartUserProcess(char *filename)
     ASSERT(FALSE);			// machine->Run never returns;
 					// the address space exits
 					// by doing the syscall "exit"
+}
+
+
+// Adding in Batch Format
+
+void
+BulkAdd(char *filename,int p)
+{
+    OpenFile *executable = fileSystem->Open(filename);
+    if (executable == NULL) {
+    printf("Unable to open file %s\n", filename);
+    return;
+    } 
+    NachOSThread *BatchAdd;
+    BatchAdd = new NachOSThread("Batch Added thread");
+    BatchAdd->space = new ProcessAddrSpace(executable);
+
+    delete executable;          // close file
+    BatchAdd->priority = p;  // Setting Priority for new Thread.
+    BatchAdd->space->InitUserCPURegisters();      // set the initial register values
+    BatchAdd->SaveUserState();
+    BatchAdd->space->RestoreStateOnSwitch(); 
+    BatchAdd->AllocateThreadStack (BulkStartFunction,0);     // Make it ready for a later context switch
+    BatchAdd->Schedule ();     // load page table register
+    //BatchAdd->ThreadFork(BulkStartFunction,0);
 }
 
 // Data structures needed for the console test.  Threads making
