@@ -136,6 +136,10 @@ class NachOSThread {
     void IncInstructionCount();
     unsigned GetInstructionCount();
 
+    int GetPriority();					// Gets the priority value assigned to the thread
+    int SetPriority();					// Sets the priority value of thread during scheduling
+    int SetCPU_ticks();					// Sets CPU usage
+
   private:
     // some of the private data for this class is listed above
     
@@ -146,6 +150,10 @@ class NachOSThread {
     char* name;
 
     int pid, ppid;			// My pid and my parent's pid
+
+    int CPU_ticks;			// CPU usage count
+    int UNIX_BasePriority = 50;		// Thread's default base priority for UNIX scheduling
+    int UNIX_Priority;			// Thread's priority for UNIX scheduling
 
     int childpidArray[MAX_CHILD_COUNT]; // My children
     int childexitcode[MAX_CHILD_COUNT]; // Exit code of my children (return values for Join calls)

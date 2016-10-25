@@ -40,6 +40,7 @@ NachOSThread::NachOSThread(char* threadName)
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    UNIX_Priority = priority + UNIX_BasePriority;
 #ifdef USER_PROGRAM
     space = NULL;
     stateRestored = true;
@@ -563,4 +564,38 @@ unsigned
 NachOSThread::GetInstructionCount (void)
 {
    return instructionCount;
+}
+
+//----------------------------------------------------------------------
+// NachOSThread::GetPriority
+//	returns the priority value of the thread
+//----------------------------------------------------------------------
+
+void
+NachOSThread::GetPriority ()
+{
+   return UNIX_Priority;
+}
+
+//---------------------------------------------------------------------
+// NachOSThread::SetPriority
+//	sets priority value for UNIX scheduling
+//---------------------------------------------------------------------
+
+void
+NachOSThread::SetPriority ()
+{
+   UNIX_Priority = UNIX_Priority + CPU_ticks/4;
+   CPU_ticks = CPU_ticks/2;
+}
+
+//---------------------------------------------------------------------
+// NachOSThread::SetCPU_ticks
+//	sets the CPU usage on thread being active
+//---------------------------------------------------------------------
+
+void
+NachOSThread::SetCPU_ticks()
+{
+   CPU_ticks//quantum number;
 }

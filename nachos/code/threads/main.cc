@@ -154,7 +154,7 @@ main(int argc, char **argv)
 	#endif // USER_PROGRAM
 	#ifdef FILESYS
 		if (!strcmp(*argv, "-cp")) { 		// copy from UNIX to Nachos
-		    ASSER)T(argc > 2);
+		    ASSERT(argc > 2);
 	    Copy(*(argv + 1), *(argv + 2));
 	    argCount = 3;
 	} else if (!strcmp(*argv, "-p")) {	// print a Nachos file

@@ -171,3 +171,22 @@ NachOSscheduler::Print()
     printf("Ready list contents:\n");
     readyThreadList->Mapcar((VoidFunctionPtr) ThreadPrint);
 }
+
+//----------------------------------------------------------------------
+// NachOSscheduler::UNIX_schedule
+//	Implements UNIX scheduling algorithm with base priority 50
+//----------------------------------------------------------------------
+void
+NachOSscheduler::UNIX_Schedule ()
+{
+   // Implement UNIX scheduling algorithm
+   // For every quantum passed, timer interrupts and calls UNIX_Schedule
+   // which  updates the priority of every thread in ready list for scheduling and then
+   // iterates through the ready list to find the thread with minimum priority value.
+   // Switch to that thread having low priority value
+   //for(every thread in ready list){
+   //	thread->SetPriority();
+   //   if(currentThread->GetPriority() > thread->GetPriority()) note down the list counter
+   //}
+   // With the list counter get the thread and switch to that thread
+}
