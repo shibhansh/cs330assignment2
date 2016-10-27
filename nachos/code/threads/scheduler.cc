@@ -184,6 +184,17 @@ NachOSscheduler::UNIX_Schedule ()
    // which  updates the priority of every thread in ready list for scheduling and then
    // iterates through the ready list to find the thread with minimum priority value.
    // Switch to that thread having low priority value
+   NachOSThread *tempThread = NULL;
+   NachOSThread *nextThread = NULL;
+   queueList = new List;
+   queueList = readyThreadList;
+   while((tempThread = queueList->FindNextThreadtoRun())!=NULL){
+        tempthread->SetPriority();
+        nextThread = currentThread;
+        if(tempThread->GetPriority() < nextThread->GetPriority()) nextThread = tempThread;
+   }
+   nextThread->SetCPU_ticks();
+   Schedule(nextThread);
    //for(every thread in ready list){
    //	thread->SetPriority();
    //   if(currentThread->GetPriority() > thread->GetPriority()) note down the list counter
