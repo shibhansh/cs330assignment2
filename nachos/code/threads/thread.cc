@@ -597,5 +597,5 @@ NachOSThread::SetPriority ()
 void
 NachOSThread::SetCPU_ticks()
 {
-   CPU_ticks//quantum number;
+   CPU_ticks = 100//quantum number;
 }
