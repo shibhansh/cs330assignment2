@@ -151,7 +151,7 @@ class NachOSThread {
 
     int pid, ppid;			// My pid and my parent's pid
 
-    int CPU_ticks;			// CPU usage count
+    int CPU_ticks = 100;			// CPU usage count
     int UNIX_BasePriority = 50;		// Thread's default base priority for UNIX scheduling
     int UNIX_Priority;			// Thread's priority for UNIX scheduling
 
