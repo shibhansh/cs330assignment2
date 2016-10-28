@@ -571,7 +571,7 @@ NachOSThread::GetInstructionCount (void)
 //	returns the priority value of the thread
 //----------------------------------------------------------------------
 
-void
+int
 NachOSThread::GetPriority ()
 {
    return UNIX_Priority;
@@ -597,5 +597,5 @@ NachOSThread::SetPriority ()
 void
 NachOSThread::SetCPU_ticks()
 {
-   CPU_ticks = 100//quantum number;
+   CPU_ticks = 100;//quantum number;
 }

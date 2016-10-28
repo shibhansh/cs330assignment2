@@ -15,6 +15,7 @@
 
 #include "copyright.h"
 #include "utility.h"
+#include "thread.h"
 
 // The following class defines a "list element" -- which is
 // used to keep track of one item on a list.  It is equivalent to a
@@ -51,6 +52,7 @@ class List {
 
     void Mapcar(VoidFunctionPtr func);	// Apply "func" to every element 
 					// on the list
+    NachOSThread * Unix();
     bool IsEmpty();		// is the list empty? 
     
 

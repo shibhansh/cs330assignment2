@@ -137,8 +137,8 @@ class NachOSThread {
     unsigned GetInstructionCount();
 
     int GetPriority();					// Gets the priority value assigned to the thread
-    int SetPriority();					// Sets the priority value of thread during scheduling
-    int SetCPU_ticks();					// Sets CPU usage
+    void SetPriority();					// Sets the priority value of thread during scheduling
+    void SetCPU_ticks();					// Sets CPU usage
 
   private:
     // some of the private data for this class is listed above

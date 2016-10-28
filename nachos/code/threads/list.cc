@@ -146,6 +146,23 @@ List::Mapcar(VoidFunctionPtr func)
     }
 }
 
+
+NachOSThread *
+List::Unix()
+{
+    int p = 10000;
+    NachOSThread *curr,*temp;
+    for (ListElement *ptr = first; ptr != NULL; ptr = ptr->next) {
+       temp = (NachOSThread *) ptr->item;
+       temp->SetPriority();
+       if(temp->GetPriority() < p){
+            curr = temp;
+            p = temp->GetPriority();
+       } 
+    }
+    return curr;
+}
+
 //----------------------------------------------------------------------
 // List::IsEmpty
 //      Returns TRUE if the list is empty (has no items).

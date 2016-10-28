@@ -70,7 +70,11 @@ NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 NachOSThread *
 NachOSscheduler::FindNextThreadToRun ()
 {
-    return (NachOSThread *)readyThreadList->Remove();
+    NachOSThread *nextThread = NULL;
+    nextThread = readyThreadList->Unix();
+    nextThread->SetCPU_ticks();
+    return nextThread;
+    //return (NachOSThread *)readyThreadList->Remove();
 }
 
 //----------------------------------------------------------------------
@@ -184,15 +188,14 @@ NachOSscheduler::UNIX_Schedule ()
    // which  updates the priority of every thread in ready list for scheduling and then
    // iterates through the ready list to find the thread with minimum priority value.
    // Switch to that thread having low priority value
-   NachOSThread *tempThread = NULL;
    NachOSThread *nextThread = NULL;
-   queueList = new List;
-   queueList = readyThreadList;
-   while((tempThread = queueList->FindNextThreadtoRun())!=NULL){
+
+   nextThread = readyThreadList->Unix();
+   /*while((tempThread = queueList->FindNextThreadtoRun())!=NULL){
         tempthread->SetPriority();
         nextThread = currentThread;
         if(tempThread->GetPriority() < nextThread->GetPriority()) nextThread = tempThread;
-   }
+   }*/
    nextThread->SetCPU_ticks();
    Schedule(nextThread);
    //for(every thread in ready list){
