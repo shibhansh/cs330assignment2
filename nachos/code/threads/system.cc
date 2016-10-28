@@ -100,7 +100,7 @@ Initialize(int argc, char **argv)
 
     initializedConsoleSemaphores = false;
     numPagesAllocated = 0;
-    scheduler_type = 0;
+    scheduler_type = 1;
     for (i=0; i<MAX_THREAD_COUNT; i++) { threadArray[i] = NULL; exitThreadArray[i] = false; }
     thread_index = 0;
 

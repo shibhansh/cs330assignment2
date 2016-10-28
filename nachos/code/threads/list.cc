@@ -146,6 +146,15 @@ List::Mapcar(VoidFunctionPtr func)
     }
 }
 
+int
+List::NumOfElements()
+{
+    int count=0;
+    for (ListElement *ptr = first; ptr != NULL; ptr = ptr->next) {
+       count++;
+    }
+    return count;
+}
 
 NachOSThread *
 List::Unix()
@@ -163,11 +172,21 @@ List::Unix()
        } 
        prev = ptr;
     }
-    if(pre == NULL){
+    // if(pre == NULL){
+    //     first = cur->next;
+    // }
+    // else if (cur ->next == NULL){
+    //     pre->next =NULL;
+    // }
+    // else{
+    //     pre->next = cur->next;
+    // }
+    if(cur == first){
         first = cur->next;
     }
-    else if (cur ->next == NULL){
-        pre->next =NULL;
+    else if(cur == last){
+        last = pre;
+        last->next = NULL;
     }
     else{
         pre->next = cur->next;

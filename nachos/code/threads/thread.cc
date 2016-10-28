@@ -35,12 +35,10 @@
 NachOSThread::NachOSThread(char* threadName)
 {
     int i;
-    priority = 0;
     name = threadName;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
-    UNIX_Priority = priority + UNIX_BasePriority;
 #ifdef USER_PROGRAM
     space = NULL;
     stateRestored = true;
@@ -60,9 +58,10 @@ NachOSThread::NachOSThread(char* threadName)
     waitchild_id = -1;
 
     for (i=0; i<MAX_CHILD_COUNT; i++) exitedChild[i] = false;
-
     instructionCount = 0;
 }
+
+
 
 //----------------------------------------------------------------------
 // NachOSThread::~NachOSThread
@@ -590,8 +589,8 @@ NachOSThread::GetPriority ()
 void
 NachOSThread::SetPriority ()
 {
-   UNIX_Priority = UNIX_Priority + CPU_ticks/4;
    CPU_ticks = CPU_ticks/2;
+   UNIX_Priority = UNIX_BasePriority + CPU_ticks/2;
    DEBUG('p', "Setting priority of pid %d = %d\n", pid,UNIX_Priority);
 }
 
@@ -604,4 +603,10 @@ void
 NachOSThread::SetCPU_ticks()
 {
    CPU_ticks = 100;//quantum number;
+}
+
+void
+NachOSThread::SetBasePriority()
+{ 
+   UNIX_BasePriority = priority + UNIX_BasePriority;
 }

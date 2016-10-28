@@ -139,6 +139,7 @@ class NachOSThread {
     int GetPriority();					// Gets the priority value assigned to the thread
     void SetPriority();					// Sets the priority value of thread during scheduling
     void SetCPU_ticks();					// Sets CPU usage
+    void SetBasePriority();
 
   private:
     // some of the private data for this class is listed above
@@ -151,7 +152,7 @@ class NachOSThread {
 
     int pid, ppid;			// My pid and my parent's pid
 
-    int CPU_ticks = 100;			// CPU usage count
+    int CPU_ticks = 0;			// CPU usage count
     int UNIX_BasePriority = 50;		// Thread's default base priority for UNIX scheduling
     int UNIX_Priority;			// Thread's priority for UNIX scheduling
 
