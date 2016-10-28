@@ -26,6 +26,17 @@ unsigned thread_index;                  // Index into this array (also used to a
 bool initializedConsoleSemaphores;
 bool exitThreadArray[MAX_THREAD_COUNT];  //Marks exited threads
 
+// STATS 
+int total_burst;
+int total_max_burst;
+int total_min_burst;
+int total_burst_count;
+int system_start_time;
+int total_ready_queue_waittime;
+int total_thread_time;
+int total_max_thread_time;
+int total_min_thread_time;
+int thread_count;
 TimeSortedWaitQueue *sleepQueueHead;    // Needed to implement SC_Sleep
 
 #ifdef FILESYS_NEEDED
@@ -114,7 +125,14 @@ Initialize(int argc, char **argv)
     initializedConsoleSemaphores = false;
     numPagesAllocated = 0;
     process_start_time = 0;
-    
+    total_burst = 0;
+    total_max_burst = 0;
+    total_min_burst = 10000;
+    total_burst_count = 0;
+    total_ready_queue_waittime = 0;
+    total_thread_time = 0;
+    total_max_thread_time = 0;
+    total_min_thread_time = 100000000;
     for (i=0; i<MAX_THREAD_COUNT; i++) { threadArray[i] = NULL; exitThreadArray[i] = false; }
     thread_index = 0;
 

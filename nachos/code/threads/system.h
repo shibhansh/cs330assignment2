@@ -37,6 +37,18 @@ extern unsigned thread_index;                  // Index into this array (also us
 extern bool initializedConsoleSemaphores;       // Used to initialize the semaphores for console I/O exactly once
 extern bool exitThreadArray[];          // Marks exited threads
 extern int process_start_time;
+
+extern int total_burst;
+extern int total_max_burst;
+extern int total_min_burst;
+extern int total_burst_count;
+extern int system_start_time;
+extern int total_ready_queue_waittime;
+
+extern int total_thread_time;
+extern int total_max_thread_time;
+extern int total_min_thread_time;
+extern int thread_count;
 class TimeSortedWaitQueue {             // Needed to implement SYScall_Sleep
 private:
    NachOSThread *t;                           // Thread pointer of the sleeping thread

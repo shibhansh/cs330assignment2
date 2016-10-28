@@ -53,6 +53,7 @@
 #include "system.h"
 #include "machine.h"
 #include "syscall.h"
+#include "stats.h"
 #include <fstream>
 #include <stdio.h>
 #include <string>
@@ -87,12 +88,13 @@ extern void BulkAdd(char *filename,int p);
 int
 main(int argc, char **argv)
 {
+
     int argCount;			// the number of arguments 
 					// for a particular command
 
     DEBUG('t', "Entering main");
     (void) Initialize(argc, argv);
-    
+    system_start_time = stats->totalTicks;
 #ifdef THREADS
     ThreadTest();
 #endif
@@ -121,7 +123,7 @@ main(int argc, char **argv)
 					// for console input
 	}
 	if(!strcmp(*argv, "-F")){
-		
+		thread_count = 0;
 		std::ifstream infile(*(argv + 1));
 		std::string line;
 		int flag = 1;
@@ -144,6 +146,7 @@ main(int argc, char **argv)
     			process = a;
     		}
 			BulkAdd(&process[0],priority);
+			thread_count++;
 		}
 
 		// std::ifstream infile(*(argv + 1));

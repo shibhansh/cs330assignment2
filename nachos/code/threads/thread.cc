@@ -177,6 +177,7 @@ NachOSThread::CheckOverflow()
 void
 NachOSThread::FinishThread ()
 {
+    
     (void) interrupt->SetLevel(IntOff);		
     ASSERT(this == currentThread);
     
@@ -185,6 +186,7 @@ NachOSThread::FinishThread ()
     threadToBeDestroyed = currentThread;
     PutThreadToSleep();					// invokes SWITCH
     // not reached
+
 }
 
 //----------------------------------------------------------------------
@@ -227,13 +229,29 @@ NachOSThread::Exit (bool terminateSim, int exitcode)
 {
     (void) interrupt->SetLevel(IntOff);
     ASSERT(this == currentThread);
-
+    int cpu_burst = stats->totalTicks-process_start_time;
+    if(cpu_burst > 0){
+        burst = burst + cpu_burst;
+        burst_count++;
+        if (cpu_burst >= max_burst) max_burst = cpu_burst;
+        if (cpu_burst <= min_burst) min_burst = cpu_burst;
+    }
     DEBUG('t', "Finishing thread \"%s\" with pid %d\n", getName(), pid);
-    printf("burst = %d count = %d max_burst= %d min_burst = %d\n",burst,burst_count,max_burst,min_burst );
-    printf("total waiting time in ready queue= %d, average waiting time in ready queue = %d \n", wait_time_ready_queue, wait_time_ready_queue/times_entered_ready_queue);
+    // printf("burst = %d count = %d max_burst= %d min_burst = %d\n",burst,burst_count,max_burst,min_burst );
+    // printf("total waiting time in ready queue= %d, average waiting time in ready queue = %d \n", wait_time_ready_queue, wait_time_ready_queue/times_entered_ready_queue);
     threadToBeDestroyed = currentThread;
     thread_end_time = stats->totalTicks;
-    printf("thread_run_time = %d\n", thread_end_time - thread_start_time);
+    if(currentThread->GetPID() != 0){
+      total_burst += burst;
+      if(total_max_burst <= max_burst)total_max_burst = max_burst;
+      if(total_min_burst >= min_burst) total_min_burst = min_burst;
+      total_burst_count += burst_count;
+      total_ready_queue_waittime += wait_time_ready_queue/times_entered_ready_queue;
+      int thread_run_time = thread_end_time - thread_start_time;
+      total_thread_time += thread_run_time;
+      if (total_max_thread_time <= thread_run_time) total_max_thread_time = thread_run_time;
+      if (total_min_thread_time >= thread_run_time) total_min_thread_time = thread_run_time;
+    }
     NachOSThread *nextThread;
 
     status = BLOCKED;
@@ -323,6 +341,7 @@ NachOSThread::YieldCPU ()
 void
 NachOSThread::PutThreadToSleep ()
 {
+
     NachOSThread *nextThread;
     
     ASSERT(this == currentThread);
