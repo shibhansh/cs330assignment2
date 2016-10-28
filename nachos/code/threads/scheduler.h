@@ -29,7 +29,7 @@ class NachOSscheduler {
     void Print();			// Print contents of ready list
     
     void Tail();                        // Used by fork()
-    void UNIX_Schedule();		// Implemented for UNIX scheduling
+    void UNIX_priority_set();		// Implemented for UNIX scheduling
   private:
     List *readyThreadList;  		// queue of threads that are ready to run,
 				// but not running

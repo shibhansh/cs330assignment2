@@ -1,0 +1,2 @@
+../test/testloop4 10
+../test/testloop4 20

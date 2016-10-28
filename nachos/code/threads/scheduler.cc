@@ -70,10 +70,9 @@ NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 NachOSThread *
 NachOSscheduler::FindNextThreadToRun ()
 {
-    NachOSThread *nextThread = NULL;
-    nextThread = readyThreadList->Unix();
-    nextThread->SetCPU_ticks();
-    return nextThread;
+    if(!readyThreadList->IsEmpty()){
+        return readyThreadList->Unix();
+    }
     //return (NachOSThread *)readyThreadList->Remove();
 }
 
@@ -181,26 +180,14 @@ NachOSscheduler::Print()
 //	Implements UNIX scheduling algorithm with base priority 50
 //----------------------------------------------------------------------
 void
-NachOSscheduler::UNIX_Schedule ()
+NachOSscheduler::UNIX_priority_set()
 {
-   // Implement UNIX scheduling algorithm
-   // For every quantum passed, timer interrupts and calls UNIX_Schedule
-   // which  updates the priority of every thread in ready list for scheduling and then
-   // iterates through the ready list to find the thread with minimum priority value.
-   // Switch to that thread having low priority value
-   NachOSThread *nextThread = NULL;
-
-   nextThread = readyThreadList->Unix();
-   /*while((tempThread = queueList->FindNextThreadtoRun())!=NULL){
-        tempthread->SetPriority();
-        nextThread = currentThread;
-        if(tempThread->GetPriority() < nextThread->GetPriority()) nextThread = tempThread;
-   }*/
-   nextThread->SetCPU_ticks();
-   Schedule(nextThread);
-   //for(every thread in ready list){
-   //	thread->SetPriority();
-   //   if(currentThread->GetPriority() > thread->GetPriority()) note down the list counter
-   //}
-   // With the list counter get the thread and switch to that thread
+  currentThread->SetCPU_ticks();
+  TimeSortedWaitQueue *ptr = sleepQueueHead;
+  while (ptr != NULL){
+    ptr->GetThread()->SetPriority();
+    ptr = ptr->GetNext();
+  }
+  if(!readyThreadList->IsEmpty())readyThreadList->Mapcar((VoidFunctionPtr) SetP);
+  
 }

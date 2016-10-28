@@ -152,14 +152,27 @@ List::Unix()
 {
     int p = 10000;
     NachOSThread *curr,*temp;
+    ListElement *cur=NULL,*pre=NULL,*prev = NULL;
     for (ListElement *ptr = first; ptr != NULL; ptr = ptr->next) {
        temp = (NachOSThread *) ptr->item;
-       temp->SetPriority();
        if(temp->GetPriority() < p){
             curr = temp;
+            cur = ptr;
+            pre = prev;
             p = temp->GetPriority();
        } 
+       prev = ptr;
     }
+    if(pre == NULL){
+        first = cur->next;
+    }
+    else if (cur ->next == NULL){
+        pre->next =NULL;
+    }
+    else{
+        pre->next = cur->next;
+    }
+    DEBUG('p', "Schduling %d with priority %d\n", curr->GetPID(),curr->GetPriority());
     return curr;
 }
 

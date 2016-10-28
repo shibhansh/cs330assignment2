@@ -272,12 +272,11 @@ NachOSThread::YieldCPU ()
     ASSERT(this == currentThread);
     
     DEBUG('t', "Yielding thread \"%s\" with pid %d\n", getName(), pid);
-    
+    scheduler->ThreadIsReadyToRun(this);
+    scheduler->UNIX_priority_set();
     nextThread = scheduler->FindNextThreadToRun();
-    if (nextThread != NULL) {
-	scheduler->ThreadIsReadyToRun(this);
-	scheduler->Schedule(nextThread);
-    }
+	  if (nextThread != NULL)
+    scheduler->Schedule(nextThread);
     (void) interrupt->SetLevel(oldLevel);
 }
 
@@ -311,6 +310,7 @@ NachOSThread::PutThreadToSleep ()
     DEBUG('t', "Sleeping thread \"%s\" with pid %d\n", getName(), pid);
 
     status = BLOCKED;
+    scheduler->UNIX_priority_set();
     while ((nextThread = scheduler->FindNextThreadToRun()) == NULL)
 	interrupt->Idle();	// no one to run, wait for an interrupt
         
@@ -328,6 +328,11 @@ NachOSThread::PutThreadToSleep ()
 static void ThreadFinish()    { currentThread->FinishThread(); }
 static void InterruptEnable() { interrupt->Enable(); }
 void ThreadPrint(int arg){ NachOSThread *t = (NachOSThread *)arg; t->Print(); }
+
+void SetP(int arg){ 
+  NachOSThread *t = (NachOSThread *)arg;
+  t->SetPriority(); 
+}
 
 //----------------------------------------------------------------------
 // NachOSThread::AllocateThreadStack
@@ -587,6 +592,7 @@ NachOSThread::SetPriority ()
 {
    UNIX_Priority = UNIX_Priority + CPU_ticks/4;
    CPU_ticks = CPU_ticks/2;
+   DEBUG('p', "Setting priority of pid %d = %d\n", pid,UNIX_Priority);
 }
 
 //---------------------------------------------------------------------
