@@ -70,13 +70,17 @@ NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 NachOSThread *
 NachOSscheduler::FindNextThreadToRun ()
 {
-    if(!readyThreadList->IsEmpty()){
-        return readyThreadList->Unix();
+    if(scheduler_type == 1 ){
+        if(!readyThreadList->IsEmpty()){
+            return readyThreadList->Unix();
+        }
     }
-    //return (NachOSThread *)readyThreadList->Remove();
+    else if(scheduler_type == 0 )
+     return (NachOSThread *)readyThreadList->Remove();
+    return (NachOSThread *)readyThreadList->Remove();
 }
 
-//----------------------------------------------------------------------
+//---------------------------------------------------------------------
 // NachOSscheduler::Schedule
 // 	Dispatch the CPU to nextThread.  Save the state of the old thread,
 //	and load the state of the new thread, by calling the machine

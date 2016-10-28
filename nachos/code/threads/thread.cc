@@ -273,7 +273,7 @@ NachOSThread::YieldCPU ()
     
     DEBUG('t', "Yielding thread \"%s\" with pid %d\n", getName(), pid);
     scheduler->ThreadIsReadyToRun(this);
-    scheduler->UNIX_priority_set();
+    if(scheduler_type == 1) scheduler->UNIX_priority_set();
     nextThread = scheduler->FindNextThreadToRun();
 	  if (nextThread != NULL)
     scheduler->Schedule(nextThread);
@@ -310,7 +310,7 @@ NachOSThread::PutThreadToSleep ()
     DEBUG('t', "Sleeping thread \"%s\" with pid %d\n", getName(), pid);
 
     status = BLOCKED;
-    scheduler->UNIX_priority_set();
+    if(scheduler_type == 1) scheduler->UNIX_priority_set();
     while ((nextThread = scheduler->FindNextThreadToRun()) == NULL)
 	interrupt->Idle();	// no one to run, wait for an interrupt
         
