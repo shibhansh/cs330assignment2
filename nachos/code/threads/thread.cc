@@ -43,9 +43,14 @@ NachOSThread::NachOSThread(char* threadName)
     burst_count = 0;
     max_burst = 0;
     min_burst = 10000;
+    wait_time_ready_queue = 0;
+    start_time_ready_queue = 0;
     next_estimation =100;
     previous_estimation= 100;
     previous_burst = 0;
+    times_entered_ready_queue  = 0;
+    thread_start_time = stats->totalTicks;
+    thread_end_time = 0;
 #ifdef USER_PROGRAM
     space = NULL;
     stateRestored = true;
@@ -225,8 +230,10 @@ NachOSThread::Exit (bool terminateSim, int exitcode)
 
     DEBUG('t', "Finishing thread \"%s\" with pid %d\n", getName(), pid);
     printf("burst = %d count = %d max_burst= %d min_burst = %d\n",burst,burst_count,max_burst,min_burst );
+    printf("total waiting time in ready queue= %d, average waiting time in ready queue = %d \n", wait_time_ready_queue, wait_time_ready_queue/times_entered_ready_queue);
     threadToBeDestroyed = currentThread;
-
+    thread_end_time = stats->totalTicks;
+    printf("thread_run_time = %d\n", thread_end_time - thread_start_time);
     NachOSThread *nextThread;
 
     status = BLOCKED;
@@ -630,7 +637,7 @@ NachOSThread::SetPriority ()
 void
 NachOSThread::SetCPU_ticks(int burst)
 {
-   CPU_ticks = burst;//quantum number;
+   CPU_ticks += burst;//quantum number;
 }
 
 void
@@ -643,4 +650,13 @@ int
 NachOSThread::GetNextEstimation ()
 {
    return next_estimation;
+}
+void 
+NachOSThread::set_start_time_ready_queue(){
+  start_time_ready_queue = stats->totalTicks;
+  times_entered_ready_queue ++;
+}
+void 
+NachOSThread::add_wait_time_ready_queue(){
+  wait_time_ready_queue += stats->totalTicks - start_time_ready_queue;
 }

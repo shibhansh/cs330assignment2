@@ -58,6 +58,7 @@ NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 
     thread->setStatus(READY);
     readyThreadList->Append((void *)thread);
+    thread->set_start_time_ready_queue();
 }
 
 //----------------------------------------------------------------------
@@ -71,28 +72,45 @@ NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 NachOSThread *
 NachOSscheduler::FindNextThreadToRun ()
 {
+    NachOSThread* thread_to_run;
     //DEBUG('r',"Thread Started at %d\n",stats->totalTicks);
     if(scheduler_type == 1 ){          // Unix Scheduler
         if(!readyThreadList->IsEmpty()){
-             process_start_time = stats->totalTicks;
-            return readyThreadList->Unix();
+            process_start_time = stats->totalTicks;
+            thread_to_run = readyThreadList->Unix();
+            if(thread_to_run !=NULL){
+                thread_to_run->add_wait_time_ready_queue();
+            }
+            return thread_to_run;
         }
     }
     else if(scheduler_type == 0 ){  // Non preemtive FIFO
         process_start_time = stats->totalTicks;
-        return (NachOSThread *)readyThreadList->Remove();
+        thread_to_run  = (NachOSThread *)readyThreadList->Remove();
+        if(thread_to_run !=NULL){
+                thread_to_run->add_wait_time_ready_queue();
+        }
+        return thread_to_run;
     }
     else if (scheduler_type == 2){       // Round Robin
         process_start_time = stats->totalTicks;
-        return (NachOSThread *)readyThreadList->Remove();
+        thread_to_run = (NachOSThread *)readyThreadList->Remove();
+        if(thread_to_run !=NULL){
+            thread_to_run->add_wait_time_ready_queue();
+        }
+        return thread_to_run;
     }
     else if (scheduler_type == 3){   // Shorttest next burst
         if(!readyThreadList->IsEmpty()){
              process_start_time = stats->totalTicks;
-            return (NachOSThread *)readyThreadList->SJF();
+            thread_to_run = (NachOSThread *)readyThreadList->SJF();
+                    if(thread_to_run !=NULL){
+                thread_to_run->add_wait_time_ready_queue();
+            }
+            return thread_to_run;
         }
     }
-     process_start_time = stats->totalTicks;
+    process_start_time = stats->totalTicks;
     return (NachOSThread *)readyThreadList->Remove();
 }
 

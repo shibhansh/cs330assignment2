@@ -140,7 +140,9 @@ class NachOSThread {
     void SetPriority();					// Sets the priority value of thread during scheduling
     void SetCPU_ticks(int burst);					// Sets CPU usage
     void SetBasePriority();
-    int GetNextEstimation ();
+    int GetNextEstimation();
+    void set_start_time_ready_queue();
+    void add_wait_time_ready_queue();
 
   private:
     // some of the private data for this class is listed above
@@ -161,9 +163,13 @@ class NachOSThread {
     int burst_count;
     int max_burst;
     int min_burst;
-
+    int wait_time_ready_queue;
+    int start_time_ready_queue;
+    int times_entered_ready_queue;
     int next_estimation;
     int previous_estimation;
+    int thread_start_time;
+    int thread_end_time;
     int previous_burst;
     int childpidArray[MAX_CHILD_COUNT]; // My children
     int childexitcode[MAX_CHILD_COUNT]; // Exit code of my children (return values for Join calls)
