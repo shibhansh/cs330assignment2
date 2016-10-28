@@ -72,7 +72,6 @@ BulkAdd(char *filename,int p)
     BatchAdd->space->RestoreStateOnSwitch(); 
     BatchAdd->AllocateThreadStack (BulkStartFunction,0);     // Make it ready for a later context switch
     BatchAdd->SetBasePriority();
-    DEBUG('p', "Priority = %d for thread = %d\n", BatchAdd->GetPriority (), BatchAdd->GetPID());
     BatchAdd->Schedule ();     // load page table register
     //BatchAdd->ThreadFork(BulkStartFunction,0);
 }
