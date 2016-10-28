@@ -1,6 +1,6 @@
-../test/testloop4 40
-../test/testloop4 10
-../test/testloop4 20
-../test/testloop4 30
-../test/testloop4 50
-../test/testloop4 60
+../test/testloop2 40
+../test/testloop2 10
+../test/testloop2 20
+../test/testloop2 30
+../test/testloop2 50
+../test/testloop2 60

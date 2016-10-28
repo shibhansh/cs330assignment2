@@ -70,14 +70,23 @@ NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 NachOSThread *
 NachOSscheduler::FindNextThreadToRun ()
 {
-    if(scheduler_type == 1 ){
+    //DEBUG('r',"Thread Started at %d\n",stats->totalTicks);
+    if(scheduler_type == 1 ){          // Unix Scheduler
         if(!readyThreadList->IsEmpty()){
             return readyThreadList->Unix();
             process_start_time = stats->totalTicks;
         }
     }
-    else if(scheduler_type == 0 ){
-         process_start_time = stats->totalTicks;
+    else if(scheduler_type == 0 ){  // Non preemtive FIFO
+        process_start_time = stats->totalTicks;
+        return (NachOSThread *)readyThreadList->Remove();
+    }
+    else if (scheduler_type == 2){       // Round Robin
+        process_start_time = stats->totalTicks;
+        return (NachOSThread *)readyThreadList->Remove();
+    }
+    else if (scheduler_type == 3){   // Shorttest next burst
+        process_start_time = stats->totalTicks;
         return (NachOSThread *)readyThreadList->Remove();
     }
      process_start_time = stats->totalTicks;

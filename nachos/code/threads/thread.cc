@@ -269,7 +269,8 @@ NachOSThread::YieldCPU ()
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
     
     ASSERT(this == currentThread);
-    
+    DEBUG('r',"Thread %d Timer cpu burst= %d\n",currentThread->GetPID(),stats->totalTicks-process_start_time);
+
     DEBUG('t', "Yielding thread \"%s\" with pid %d\n", getName(), pid);
     scheduler->ThreadIsReadyToRun(this);
     if(scheduler_type == 1) scheduler->UNIX_priority_set();
@@ -305,7 +306,8 @@ NachOSThread::PutThreadToSleep ()
     
     ASSERT(this == currentThread);
     ASSERT(interrupt->getLevel() == IntOff);
-    
+    DEBUG('r',"Thread %d I/O cpu burst= %d\n",currentThread->GetPID(),stats->totalTicks-process_start_time);
+
     DEBUG('t', "Sleeping thread \"%s\" with pid %d\n", getName(), pid);
 
     status = BLOCKED;
