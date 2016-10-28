@@ -172,15 +172,6 @@ List::Unix()
        } 
        prev = ptr;
     }
-    // if(pre == NULL){
-    //     first = cur->next;
-    // }
-    // else if (cur ->next == NULL){
-    //     pre->next =NULL;
-    // }
-    // else{
-    //     pre->next = cur->next;
-    // }
     if(cur == first){
         first = cur->next;
     }
@@ -192,6 +183,38 @@ List::Unix()
         pre->next = cur->next;
     }
     DEBUG('p', "Schduling %d with priority %d\n", curr->GetPID(),curr->GetPriority());
+    return curr;
+}
+
+
+NachOSThread *
+List::SJF()
+{
+
+    int p = -1;
+    NachOSThread *curr,*temp;
+    ListElement *cur=NULL,*pre=NULL,*prev = NULL;
+    for (ListElement *ptr = first; ptr != NULL; ptr = ptr->next) {
+       temp = (NachOSThread *) ptr->item;
+       if(temp->GetNextEstimation() < p || p < 0){
+            curr = temp;
+            cur = ptr;
+            pre = prev;
+            p = temp->GetNextEstimation();
+       } 
+       prev = ptr;
+    }
+    if(cur == first){
+        first = cur->next;
+    }
+    else if(cur == last){
+        last = pre;
+        last->next = NULL;
+    }
+    else{
+        pre->next = cur->next;
+    }
+    DEBUG('p', "Schduling %d with priority %d\n", curr->GetPID(),curr->GetNextEstimation());
     return curr;
 }
 

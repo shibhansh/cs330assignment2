@@ -53,6 +53,7 @@ class List {
     void Mapcar(VoidFunctionPtr func);	// Apply "func" to every element 
 					// on the list
     NachOSThread * Unix();
+    NachOSThread * SJF();
     bool IsEmpty();		// is the list empty? 
     
 

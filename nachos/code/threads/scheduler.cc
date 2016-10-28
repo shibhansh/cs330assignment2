@@ -87,8 +87,10 @@ NachOSscheduler::FindNextThreadToRun ()
         return (NachOSThread *)readyThreadList->Remove();
     }
     else if (scheduler_type == 3){   // Shorttest next burst
-        process_start_time = stats->totalTicks;
-        return (NachOSThread *)readyThreadList->Remove();
+        if(!readyThreadList->IsEmpty()){
+             process_start_time = stats->totalTicks;
+            return (NachOSThread *)readyThreadList->SJF();
+        }
     }
      process_start_time = stats->totalTicks;
     return (NachOSThread *)readyThreadList->Remove();

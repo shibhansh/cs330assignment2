@@ -39,6 +39,13 @@ NachOSThread::NachOSThread(char* threadName)
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    burst = 0;
+    burst_count = 0;
+    max_burst = 0;
+    min_burst = 10000;
+    next_estimation =100;
+    previous_estimation= 100;
+    previous_burst = 0;
 #ifdef USER_PROGRAM
     space = NULL;
     stateRestored = true;
@@ -217,7 +224,7 @@ NachOSThread::Exit (bool terminateSim, int exitcode)
     ASSERT(this == currentThread);
 
     DEBUG('t', "Finishing thread \"%s\" with pid %d\n", getName(), pid);
-
+    printf("burst = %d count = %d max_burst= %d min_burst = %d\n",burst,burst_count,max_burst,min_burst );
     threadToBeDestroyed = currentThread;
 
     NachOSThread *nextThread;
@@ -270,7 +277,12 @@ NachOSThread::YieldCPU ()
     
     ASSERT(this == currentThread);
     int cpu_burst = stats->totalTicks-process_start_time;
-
+    if(cpu_burst > 0){
+        burst = burst + cpu_burst;
+        burst_count++;
+        if (cpu_burst >= max_burst) max_burst = cpu_burst;
+        if (cpu_burst <= min_burst) min_burst = cpu_burst;
+    }
     DEBUG('r',"Thread %d Timer cpu burst= %d\n",currentThread->GetPID(),cpu_burst);
 
     DEBUG('t', "Yielding thread \"%s\" with pid %d\n", getName(), pid);
@@ -309,12 +321,23 @@ NachOSThread::PutThreadToSleep ()
     ASSERT(this == currentThread);
     ASSERT(interrupt->getLevel() == IntOff);
     int cpu_burst = stats->totalTicks-process_start_time;
+    if(cpu_burst > 0){
+        burst = burst + cpu_burst;
+        burst_count++;
+        if (cpu_burst >= max_burst) max_burst = cpu_burst;
+        if (cpu_burst <= min_burst) min_burst = cpu_burst;
+    }
     DEBUG('r',"Thread %d I/O cpu burst= %d\n",currentThread->GetPID(),cpu_burst);
 
     DEBUG('t', "Sleeping thread \"%s\" with pid %d\n", getName(), pid);
 
     status = BLOCKED;
     if(scheduler_type == 1) scheduler->UNIX_priority_set(cpu_burst);
+    else if (scheduler_type == 3){
+      previous_burst = cpu_burst;
+      previous_estimation = next_estimation;
+      next_estimation = (previous_estimation + previous_burst)/2;
+    }
     while ((nextThread = scheduler->FindNextThreadToRun()) == NULL)
 	interrupt->Idle();	// no one to run, wait for an interrupt
         
@@ -614,4 +637,10 @@ void
 NachOSThread::SetBasePriority()
 { 
    UNIX_BasePriority = priority + UNIX_BasePriority;
+}
+
+int
+NachOSThread::GetNextEstimation ()
+{
+   return next_estimation;
 }
