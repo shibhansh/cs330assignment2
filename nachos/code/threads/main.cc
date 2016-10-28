@@ -124,10 +124,16 @@ main(int argc, char **argv)
 		
 		std::ifstream infile(*(argv + 1));
 		std::string line;
+		int flag = 1;
 		while (std::getline(infile, line))
 		{
     		int priority;
     		std::istringstream iss(line);
+    		if (flag == 1){
+    			scheduler_type = atoi(line.c_str());
+    			flag = 0;
+    			continue;
+    		}
     		string a,b,process;
     		if (!(iss >> a >> b)) {
     			priority = 100;
