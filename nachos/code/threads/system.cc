@@ -20,6 +20,7 @@ Timer *timer;				// the hardware timer device,
 					// for invoking context switches
 unsigned numPagesAllocated;              // number of physical frames allocated
 int scheduler_type;
+int process_start_time;
 NachOSThread *threadArray[MAX_THREAD_COUNT];  // Array of thread pointers
 unsigned thread_index;                  // Index into this array (also used to assign unique pid)
 bool initializedConsoleSemaphores;
@@ -77,7 +78,8 @@ TimerInterruptHandler(int dummy)
            delete ptr;
         }
         //printf("[%d] Timer interrupt.\n", stats->totalTicks);
-        interrupt->YieldOnReturn();
+        int cpu_burst_current_thread =  stats->totalTicks - process_start_time ;
+        if (cpu_burst_current_thread >= TimerTicks) interrupt->YieldOnReturn();
     }
 }
 
@@ -100,6 +102,7 @@ Initialize(int argc, char **argv)
 
     initializedConsoleSemaphores = false;
     numPagesAllocated = 0;
+    process_start_time = 0;
     scheduler_type = 1;
     for (i=0; i<MAX_THREAD_COUNT; i++) { threadArray[i] = NULL; exitThreadArray[i] = false; }
     thread_index = 0;

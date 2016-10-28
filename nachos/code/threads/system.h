@@ -36,7 +36,7 @@ extern NachOSThread *threadArray[];  			// Array of thread pointers
 extern unsigned thread_index;                  // Index into this array (also used to assign unique pid)
 extern bool initializedConsoleSemaphores;       // Used to initialize the semaphores for console I/O exactly once
 extern bool exitThreadArray[];          // Marks exited threads
-
+extern int process_start_time;
 class TimeSortedWaitQueue {             // Needed to implement SYScall_Sleep
 private:
    NachOSThread *t;                           // Thread pointer of the sleeping thread

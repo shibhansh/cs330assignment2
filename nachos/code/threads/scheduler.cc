@@ -73,10 +73,14 @@ NachOSscheduler::FindNextThreadToRun ()
     if(scheduler_type == 1 ){
         if(!readyThreadList->IsEmpty()){
             return readyThreadList->Unix();
+            process_start_time = stats->totalTicks;
         }
     }
-    else if(scheduler_type == 0 )
-     return (NachOSThread *)readyThreadList->Remove();
+    else if(scheduler_type == 0 ){
+         process_start_time = stats->totalTicks;
+        return (NachOSThread *)readyThreadList->Remove();
+    }
+     process_start_time = stats->totalTicks;
     return (NachOSThread *)readyThreadList->Remove();
 }
 
