@@ -138,7 +138,7 @@ class NachOSThread {
 
     int GetPriority();					// Gets the priority value assigned to the thread
     void SetPriority();					// Sets the priority value of thread during scheduling
-    void SetCPU_ticks();					// Sets CPU usage
+    void SetCPU_ticks(int burst);					// Sets CPU usage
     void SetBasePriority();
 
   private:

@@ -77,7 +77,7 @@ TimerInterruptHandler(int dummy)
            sleepQueueHead = sleepQueueHead->GetNext();
            delete ptr;
         }
-        if(scheduler_type == 1 ){       
+        if(scheduler_type == 1 ){
             int cpu_burst_current_thread =  stats->totalTicks - process_start_time ;
             if (cpu_burst_current_thread >= TimerTicks) interrupt->YieldOnReturn();
         }
@@ -114,7 +114,7 @@ Initialize(int argc, char **argv)
     initializedConsoleSemaphores = false;
     numPagesAllocated = 0;
     process_start_time = 0;
-    scheduler_type = 0;
+    scheduler_type = 1;
     for (i=0; i<MAX_THREAD_COUNT; i++) { threadArray[i] = NULL; exitThreadArray[i] = false; }
     thread_index = 0;
 

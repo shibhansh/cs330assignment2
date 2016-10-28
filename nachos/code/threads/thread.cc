@@ -269,11 +269,13 @@ NachOSThread::YieldCPU ()
     IntStatus oldLevel = interrupt->SetLevel(IntOff);
     
     ASSERT(this == currentThread);
-    DEBUG('r',"Thread %d Timer cpu burst= %d\n",currentThread->GetPID(),stats->totalTicks-process_start_time);
+    int cpu_burst = stats->totalTicks-process_start_time;
+
+    DEBUG('r',"Thread %d Timer cpu burst= %d\n",currentThread->GetPID(),cpu_burst);
 
     DEBUG('t', "Yielding thread \"%s\" with pid %d\n", getName(), pid);
     scheduler->ThreadIsReadyToRun(this);
-    if(scheduler_type == 1) scheduler->UNIX_priority_set();
+    if(scheduler_type == 1) scheduler->UNIX_priority_set(cpu_burst);
     nextThread = scheduler->FindNextThreadToRun();
 	  if (nextThread != NULL)
     scheduler->Schedule(nextThread);
@@ -306,12 +308,13 @@ NachOSThread::PutThreadToSleep ()
     
     ASSERT(this == currentThread);
     ASSERT(interrupt->getLevel() == IntOff);
-    DEBUG('r',"Thread %d I/O cpu burst= %d\n",currentThread->GetPID(),stats->totalTicks-process_start_time);
+    int cpu_burst = stats->totalTicks-process_start_time;
+    DEBUG('r',"Thread %d I/O cpu burst= %d\n",currentThread->GetPID(),cpu_burst);
 
     DEBUG('t', "Sleeping thread \"%s\" with pid %d\n", getName(), pid);
 
     status = BLOCKED;
-    if(scheduler_type == 1) scheduler->UNIX_priority_set();
+    if(scheduler_type == 1) scheduler->UNIX_priority_set(cpu_burst);
     while ((nextThread = scheduler->FindNextThreadToRun()) == NULL)
 	interrupt->Idle();	// no one to run, wait for an interrupt
         
@@ -602,9 +605,9 @@ NachOSThread::SetPriority ()
 //---------------------------------------------------------------------
 
 void
-NachOSThread::SetCPU_ticks()
+NachOSThread::SetCPU_ticks(int burst)
 {
-   CPU_ticks = TimerTicks;//quantum number;
+   CPU_ticks = burst;//quantum number;
 }
 
 void

@@ -54,6 +54,7 @@ void
 NachOSscheduler::ThreadIsReadyToRun (NachOSThread *thread)
 {
     DEBUG('t', "Putting thread %s with PID %d on ready list.\n", thread->getName(), thread->GetPID());
+    DEBUG('t', "No of elements in ready queue = %d.\n", readyThreadList->NumOfElements());
 
     thread->setStatus(READY);
     readyThreadList->Append((void *)thread);
@@ -73,8 +74,8 @@ NachOSscheduler::FindNextThreadToRun ()
     //DEBUG('r',"Thread Started at %d\n",stats->totalTicks);
     if(scheduler_type == 1 ){          // Unix Scheduler
         if(!readyThreadList->IsEmpty()){
+             process_start_time = stats->totalTicks;
             return readyThreadList->Unix();
-            process_start_time = stats->totalTicks;
         }
     }
     else if(scheduler_type == 0 ){  // Non preemtive FIFO
@@ -197,9 +198,9 @@ NachOSscheduler::Print()
 //	Implements UNIX scheduling algorithm with base priority 50
 //----------------------------------------------------------------------
 void
-NachOSscheduler::UNIX_priority_set()
+NachOSscheduler::UNIX_priority_set(int burst)
 {
-  currentThread->SetCPU_ticks();
+  currentThread->SetCPU_ticks(burst);
   TimeSortedWaitQueue *ptr = sleepQueueHead;
   while (ptr != NULL){
     ptr->GetThread()->SetPriority();
