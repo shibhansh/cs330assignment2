@@ -65,13 +65,14 @@ BulkAdd(char *filename,int p)
     NachOSThread *BatchAdd;
     BatchAdd = new NachOSThread("Batch Added thread");
     BatchAdd->space = new ProcessAddrSpace(executable);
-
     delete executable;          // close file
     BatchAdd->priority = p;  // Setting Priority for new Thread.
     BatchAdd->space->InitUserCPURegisters();      // set the initial register values
     BatchAdd->SaveUserState();
     BatchAdd->space->RestoreStateOnSwitch(); 
     BatchAdd->AllocateThreadStack (BulkStartFunction,0);     // Make it ready for a later context switch
+    BatchAdd->SetBasePriority();
+    DEBUG('p', "Priority = %d for thread = %d\n", BatchAdd->GetPriority (), BatchAdd->GetPID());
     BatchAdd->Schedule ();     // load page table register
     //BatchAdd->ThreadFork(BulkStartFunction,0);
 }
